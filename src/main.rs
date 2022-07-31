@@ -1,3 +1,6 @@
+mod graph;
+
 fn main() {
-  println!("Hello, world!");
+  let g = graph::Graph::new(1000, 0.5);
+  println!("density: {}", g.density());
 }
