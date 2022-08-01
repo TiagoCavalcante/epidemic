@@ -35,20 +35,28 @@ impl Epidemic {
   }
 
   pub fn time_step(&mut self) {
+    // Increase the infected time of the infected persons.
+    // If a person infected time is equal to 5 this person
+    // is healthy now.
+    // Every time a person gets healthy all its connections
+    // have their infected connections decreased by one.
+    // Recovered persons "looses" its connections with all
+    // other persons as it can't transmit anymore.
     for i in 0..self.connections.size {
       if self.persons[i].infected {
         self.persons[i].time += 1;
 
-        if self.persons[i].time == 5 {
-          // It is healthy now.
+        if self.persons[i].time >= 5 {
           self.persons[i].infected = false;
+          // This and the lines bellow ensure this person
+          // won't be infected again.
+          self.persons[i].infected_connections = 0;
 
           for j in 0..self.connections.size {
             if self.connections.get(i, j) {
-              println!("i = {i}, j = {j}");
               self.persons[j].infected_connections -= 1;
 
-              // This person can no longer transmit.
+              // A recovered person can no longer transmit.
               self.connections.set(i, j, false);
               self.connections.set(j, i, false);
             }
@@ -57,20 +65,32 @@ impl Epidemic {
       }
     }
 
-    if let Some((index, person)) = self
+    // Infect 1 person per unit of time if still there are
+    // healthy persons.
+    // The new infected will always be the person with the
+    // most infected connections.
+    // Every time a new person is infected its connections
+    // will have their number of infected connections
+    // increased by 1.
+    let new_infected_index = self
       .persons
-      .iter_mut()
-      // A person can't be infected twice.
-      .filter(|person| !person.infected)
+      .iter()
       .enumerate()
+      // A person can't be infected twice.
+      .filter(|(_, person)| !person.infected)
+      // A person can only be infected by another infected
+      // person.
+      .filter(|(_, person)| person.infected_connections > 0)
       .max_by(|(_, r), (_, l)| {
         r.infected_connections.cmp(&l.infected_connections)
       })
-    {
-      person.infected = true;
+      .map(|(index, _)| index);
+
+    if let Some(i) = new_infected_index {
+      self.persons[i].infected = true;
 
       for j in 0..self.connections.size {
-        if self.connections.get(index, j) {
+        if self.connections.get(i, j) {
           self.persons[j].infected_connections += 1;
         }
       }
