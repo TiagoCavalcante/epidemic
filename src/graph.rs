@@ -11,7 +11,12 @@ impl Graph {
     self.data[row * self.size + col]
   }
 
-  fn set(&mut self, row: usize, col: usize, value: bool) {
+  pub fn set(
+    &mut self,
+    row: usize,
+    col: usize,
+    value: bool,
+  ) {
     self.data[row * self.size + col] = value
   }
 

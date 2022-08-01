@@ -1,15 +1,18 @@
 #[derive(Debug)]
 pub struct Person {
-  index: usize,
   pub infected: bool,
+  pub infected_connections: usize,
   pub time: usize,
 }
 
 impl Person {
-  pub fn new(index: usize, infected: bool) -> Person {
+  pub fn new(
+    infected: bool,
+    infected_connections: usize,
+  ) -> Person {
     Person {
-      index,
       infected,
+      infected_connections,
       time: 0,
     }
   }
