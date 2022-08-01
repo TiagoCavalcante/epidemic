@@ -1,4 +1,4 @@
-# infections
+# epidemic
 
 Predict the future state of the population in a epidemic
 
