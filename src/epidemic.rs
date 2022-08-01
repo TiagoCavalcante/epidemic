@@ -93,7 +93,7 @@ impl Epidemic {
       if self.persons[i].infected {
         self.persons[i].time += 1;
 
-        if self.persons[i].time >= self.transmission_time {
+        if self.persons[i].time > self.transmission_time {
           self.persons[i].infected = false;
           self.persons[i].time = self.reinfection_time;
 
