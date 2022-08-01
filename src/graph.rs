@@ -1,4 +1,4 @@
-use rand::distributions::{Distribution, Uniform};
+use crate::rand::BoolRNG;
 
 #[derive(Debug)]
 pub struct Graph {
@@ -34,19 +34,13 @@ impl Graph {
   }
 
   fn fill(&mut self, density: f32) {
-    let normalized_density =
-      density / self.max_data_density();
-    let threshold =
-      (normalized_density * usize::MAX as f32) as usize;
-
-    let uniform_rng = Uniform::from(0..usize::MAX);
-    let mut rng = rand::thread_rng();
+    let mut bool_rng =
+      BoolRNG::new(density / self.max_data_density());
 
     for i in 0..self.size {
       for j in 0..self.size {
         if i < j {
-          let random_number = uniform_rng.sample(&mut rng);
-          self.set(i, j, random_number < threshold);
+          self.set(i, j, bool_rng.sample());
         } else if i == j {
           self.set(i, j, false);
         } else {

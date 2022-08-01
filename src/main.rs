@@ -1,10 +1,20 @@
 mod graph;
 mod path;
-
-use crate::path::Path;
+mod person;
+mod rand;
 
 fn main() {
-  let g = graph::Graph::new(800, 0.01);
+  let size = 10;
+  let g = graph::Graph::new(size, 0.01);
+
+  let mut bool_rng = rand::BoolRNG::new(0.1);
+
+  let mut persons = vec![];
+  for index in 0..size {
+    persons
+      .push(person::Person::new(index, bool_rng.sample()));
+  }
+
   println!("density: {}", g.density());
-  println!("paths: {:?}", g.find_paths(4, 70, 3));
+  println!("density: {:?}", persons);
 }

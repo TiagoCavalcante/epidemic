@@ -8,7 +8,7 @@ pub trait Path {
     time: usize,
     remaining_vertices: &mut Vec<usize>,
     path: &mut Vec<usize>,
-		paths: &mut Vec<Vec<usize>>
+    paths: &mut Vec<Vec<usize>>,
   ) -> Vec<Vec<usize>>;
 
   fn find_paths(
@@ -27,7 +27,7 @@ impl Path for Graph {
     time: usize,
     remaining_vertices: &mut Vec<usize>,
     path: &mut Vec<usize>,
-		paths: &mut Vec<Vec<usize>>
+    paths: &mut Vec<Vec<usize>>,
   ) -> Vec<Vec<usize>> {
     let last = remaining_vertices.len() - 1;
 
@@ -50,7 +50,7 @@ impl Path for Graph {
             time - 1,
             remaining_vertices,
             path,
-						paths
+            paths,
           );
 
           // Revert our changes.
@@ -80,7 +80,7 @@ impl Path for Graph {
 
     let mut path = vec![start];
 
-		let mut paths = vec![];
+    let mut paths = vec![];
 
     self._find_paths(
       start,
@@ -88,7 +88,7 @@ impl Path for Graph {
       time,
       &mut remaining_vertices,
       &mut path,
-			&mut paths
+      &mut paths,
     )
   }
 }
