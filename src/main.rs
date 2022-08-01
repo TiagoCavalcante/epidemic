@@ -1,6 +1,5 @@
 mod epidemic;
 mod graph;
-mod path;
 mod person;
 mod rand;
 
