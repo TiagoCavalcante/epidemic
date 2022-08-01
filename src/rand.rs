@@ -23,4 +23,13 @@ impl BoolRNG {
   pub fn sample(&mut self) -> bool {
     self.uniform_rng.sample(&mut self.rng) < self.threshold
   }
+
+  pub fn sample_weighted(&mut self, weight: usize) -> bool {
+    (0..weight)
+      .map(|_| {
+        self.uniform_rng.sample(&mut self.rng)
+          < self.threshold
+      })
+      .any(|v| v)
+  }
 }

@@ -1,12 +1,17 @@
 use crate::{graph::Graph, person::Person, rand::BoolRNG};
 
 pub struct Epidemic {
+  bool_rng: BoolRNG,
+  transmission_time: usize,
+
   connections: Graph,
   pub persons: Vec<Person>,
 }
 
 impl Epidemic {
   pub fn new(
+    alpha: f32,
+    transmission_time: usize,
     population: usize,
     density: f32,
     epidemic_density: f32,
@@ -29,12 +34,48 @@ impl Epidemic {
     }
 
     Epidemic {
+      bool_rng: BoolRNG::new(alpha),
+      transmission_time,
+
       connections,
       persons,
     }
   }
 
   pub fn time_step(&mut self) {
+    // Every person has a chance alpha of getting infected
+    // for each of its infected connections.
+    // Every time a new person is infected its connections
+    // will have their number of infected connections
+    // increased by 1.
+    self
+      .persons
+      .iter()
+      .enumerate()
+      // A person can't be infected twice.
+      .filter(|(_, person)| !person.infected)
+      // A person can only be infected by another infected
+      // person.
+      .filter(|(_, person)| person.infected_connections > 0)
+      // Take the indexes.
+      .map(|(index, _)| index)
+      // "unborrow" self.persons
+      .collect::<Vec<usize>>()
+      .iter()
+      .for_each(|i| {
+        if self.bool_rng.sample_weighted(
+          self.persons[*i].infected_connections,
+        ) {
+          self.persons[*i].infected = true;
+
+          for j in 0..self.connections.size {
+            if self.connections.get(*i, j) {
+              self.persons[j].infected_connections += 1;
+            }
+          }
+        }
+      });
+
     // Increase the infected time of the infected persons.
     // If a person infected time is equal to 5 this person
     // is healthy now.
@@ -46,7 +87,7 @@ impl Epidemic {
       if self.persons[i].infected {
         self.persons[i].time += 1;
 
-        if self.persons[i].time >= 5 {
+        if self.persons[i].time >= self.transmission_time {
           self.persons[i].infected = false;
           // This and the lines bellow ensure this person
           // won't be infected again.
@@ -64,36 +105,5 @@ impl Epidemic {
         }
       }
     }
-
-    // Infect 1 person per unit of time if still there are
-    // healthy persons.
-    // The new infected will always be the person with the
-    // most infected connections.
-    // Every time a new person is infected its connections
-    // will have their number of infected connections
-    // increased by 1.
-    self
-      .persons
-      .iter()
-      .enumerate()
-      // A person can't be infected twice.
-      .filter(|(_, person)| !person.infected)
-      // A person can only be infected by another infected
-      // person.
-      .filter(|(_, person)| person.infected_connections > 0)
-      .max_by(|(_, r), (_, l)| {
-        r.infected_connections.cmp(&l.infected_connections)
-      })
-      // "unborrow" self.persons.
-      .map(|(index, _)| index)
-      .map(|i| {
-        self.persons[i].infected = true;
-
-        for j in 0..self.connections.size {
-          if self.connections.get(i, j) {
-            self.persons[j].infected_connections += 1;
-          }
-        }
-      });
   }
 }

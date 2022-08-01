@@ -5,11 +5,11 @@ mod person;
 mod rand;
 
 fn main() {
-  let size = 800;
-  let steps = 100;
+  let size = 1000;
+  let time = 2;
 
   let mut epidemic =
-    epidemic::Epidemic::new(size, 0.9, 0.2);
+    epidemic::Epidemic::new(0.3, 1, size, 0.1, 0.01);
 
   println!(
     "epidemic(0): {:?}",
@@ -20,12 +20,12 @@ fn main() {
       .collect::<Vec<_>>()
   );
 
-  for _ in 0..steps {
+  for _ in 0..time {
     epidemic.time_step();
   }
 
   println!(
-    "epidemic({steps}): {:?}",
+    "epidemic({time}): {:?}",
     epidemic
       .persons
       .iter()
