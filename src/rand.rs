@@ -1,19 +1,19 @@
 use rand::distributions::{Distribution, Uniform};
 use rand::rngs::ThreadRng;
 
-pub struct BoolRNG {
+pub struct BoolRng {
   uniform_rng: Uniform<usize>,
   rng: ThreadRng,
   threshold: usize,
 }
 
-impl BoolRNG {
-  pub fn new(probability: f32) -> BoolRNG {
+impl BoolRng {
+  pub fn new(probability: f32) -> BoolRng {
     let uniform_rng: Uniform<usize> =
       Uniform::from(0..usize::MAX);
     let rng: ThreadRng = rand::thread_rng();
 
-    BoolRNG {
+    BoolRng {
       uniform_rng,
       rng,
       threshold: (probability * usize::MAX as f32) as usize,

@@ -1,7 +1,7 @@
-use crate::{graph::Graph, person::Person, rand::BoolRNG};
+use crate::{graph::Graph, person::Person, rand::BoolRng};
 
 pub struct Epidemic {
-  bool_rng: BoolRNG,
+  bool_rng: BoolRng,
   transmission_time: usize,
   reinfection_time: usize,
 
@@ -20,7 +20,7 @@ impl Epidemic {
   ) -> Epidemic {
     let connections = Graph::new(population, density);
 
-    let mut bool_rng = BoolRNG::new(epidemic_density);
+    let mut bool_rng = BoolRng::new(epidemic_density);
 
     let mut persons = (0..population)
       .map(|_| Person::new(bool_rng.sample()))
@@ -36,7 +36,7 @@ impl Epidemic {
     }
 
     Epidemic {
-      bool_rng: BoolRNG::new(alpha),
+      bool_rng: BoolRng::new(alpha),
       transmission_time,
       reinfection_time,
 
@@ -65,7 +65,7 @@ impl Epidemic {
       .filter(|(_, person)| person.time == 0)
       // Take the indexes.
       .map(|(index, _)| index)
-      // "unborrow" self.persons
+      // "unborrow" self.persons.
       .collect::<Vec<usize>>()
       .iter()
       .for_each(|i| {

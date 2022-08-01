@@ -1,4 +1,4 @@
-use crate::rand::BoolRNG;
+use crate::rand::BoolRng;
 
 pub struct Graph {
   pub size: usize,
@@ -39,7 +39,7 @@ impl Graph {
 
   fn fill(&mut self, density: f32) {
     let mut bool_rng =
-      BoolRNG::new(density / self.max_data_density());
+      BoolRng::new(density / self.max_data_density());
 
     for i in 0..self.size {
       for j in 0..self.size {

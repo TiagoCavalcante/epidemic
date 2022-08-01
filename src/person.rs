@@ -5,9 +5,7 @@ pub struct Person {
 }
 
 impl Person {
-  pub fn new(
-    infected: bool,
-  ) -> Person {
+  pub fn new(infected: bool) -> Person {
     Person {
       infected,
       infected_connections: 0,
