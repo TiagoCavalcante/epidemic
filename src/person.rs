@@ -1,8 +1,8 @@
 #[derive(Debug)]
 pub struct Person {
   index: usize,
-  infected: bool,
-  time: usize,
+  pub infected: bool,
+  pub time: usize,
 }
 
 impl Person {

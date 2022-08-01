@@ -1,5 +1,6 @@
 use crate::path::Path;
 
+mod epidemic;
 mod graph;
 mod path;
 mod person;
@@ -19,5 +20,5 @@ fn main() {
 
   println!("density: {}", g.density());
   println!("persons: {:?}", persons);
-  println!("paths: {:?}", g.find_paths(4, 7, 3))
+  println!("paths: {:?}", g.find_paths(4, 7, 3));
 }
