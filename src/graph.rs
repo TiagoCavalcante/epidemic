@@ -2,12 +2,12 @@ use rand::distributions::{Distribution, Uniform};
 
 #[derive(Debug)]
 pub struct Graph {
-  size: usize,
+  pub size: usize,
   data: Vec<bool>,
 }
 
 impl Graph {
-  fn get(&self, row: usize, col: usize) -> bool {
+  pub fn get(&self, row: usize, col: usize) -> bool {
     self.data[row * self.size + col]
   }
 
