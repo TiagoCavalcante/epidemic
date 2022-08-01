@@ -3,6 +3,7 @@ use crate::{graph::Graph, person::Person, rand::BoolRNG};
 pub struct Epidemic {
   bool_rng: BoolRNG,
   transmission_time: usize,
+  reinfection_time: usize,
 
   connections: Graph,
   pub persons: Vec<Person>,
@@ -12,6 +13,7 @@ impl Epidemic {
   pub fn new(
     alpha: f32,
     transmission_time: usize,
+    reinfection_time: usize,
     population: usize,
     density: f32,
     epidemic_density: f32,
@@ -36,6 +38,7 @@ impl Epidemic {
     Epidemic {
       bool_rng: BoolRNG::new(alpha),
       transmission_time,
+      reinfection_time,
 
       connections,
       persons,
@@ -57,6 +60,9 @@ impl Epidemic {
       // A person can only be infected by another infected
       // person.
       .filter(|(_, person)| person.infected_connections > 0)
+      // A person can only be reinfected after the
+      // reinfection time.
+      .filter(|(_, person)| person.time == 0)
       // Take the indexes.
       .map(|(index, _)| index)
       // "unborrow" self.persons
@@ -89,9 +95,7 @@ impl Epidemic {
 
         if self.persons[i].time >= self.transmission_time {
           self.persons[i].infected = false;
-          // This and the lines bellow ensure this person
-          // won't be infected again.
-          self.persons[i].infected_connections = 0;
+          self.persons[i].time = self.reinfection_time;
 
           for j in 0..self.connections.size {
             if self.connections.get(i, j) {
@@ -103,6 +107,8 @@ impl Epidemic {
             }
           }
         }
+      } else if self.persons[i].time > 0 {
+        self.persons[i].time -= 1;
       }
     }
   }

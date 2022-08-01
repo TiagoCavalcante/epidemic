@@ -8,8 +8,14 @@ fn main() {
   let size = 1000;
   let time = 2;
 
-  let mut epidemic =
-    epidemic::Epidemic::new(0.3, 1, size, 0.1, 0.01);
+  let mut epidemic = epidemic::Epidemic::new(
+    0.3,
+    1,
+    10,
+    size,
+    0.1,
+    0.01,
+  );
 
   println!(
     "epidemic(0): {:?}",
