@@ -1,5 +1,3 @@
-// use crate::path::Path;
-
 mod epidemic;
 mod graph;
 mod path;

@@ -1,6 +1,5 @@
 use crate::{graph::Graph, person::Person, rand::BoolRNG};
 
-#[derive(Debug)]
 pub struct Epidemic {
   connections: Graph,
   pub persons: Vec<Person>,
@@ -17,9 +16,10 @@ impl Epidemic {
     let mut bool_rng = BoolRNG::new(epidemic_density);
 
     let mut persons = (0..population)
-      .map(|_| Person::new(bool_rng.sample(), 0))
+      .map(|_| Person::new(bool_rng.sample()))
       .collect::<Vec<Person>>();
 
+    // Calculate infected connections.
     for i in 0..population {
       for j in 0..population {
         if persons[i].infected && connections.get(i, j) {
@@ -72,7 +72,7 @@ impl Epidemic {
     // Every time a new person is infected its connections
     // will have their number of infected connections
     // increased by 1.
-    let new_infected_index = self
+    self
       .persons
       .iter()
       .enumerate()
@@ -84,16 +84,16 @@ impl Epidemic {
       .max_by(|(_, r), (_, l)| {
         r.infected_connections.cmp(&l.infected_connections)
       })
-      .map(|(index, _)| index);
+      // "unborrow" self.persons.
+      .map(|(index, _)| index)
+      .map(|i| {
+        self.persons[i].infected = true;
 
-    if let Some(i) = new_infected_index {
-      self.persons[i].infected = true;
-
-      for j in 0..self.connections.size {
-        if self.connections.get(i, j) {
-          self.persons[j].infected_connections += 1;
+        for j in 0..self.connections.size {
+          if self.connections.get(i, j) {
+            self.persons[j].infected_connections += 1;
+          }
         }
-      }
-    }
+      });
   }
 }

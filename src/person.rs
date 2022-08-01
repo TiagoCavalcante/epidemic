@@ -1,4 +1,3 @@
-#[derive(Debug)]
 pub struct Person {
   pub infected: bool,
   pub infected_connections: usize,
@@ -8,11 +7,10 @@ pub struct Person {
 impl Person {
   pub fn new(
     infected: bool,
-    infected_connections: usize,
   ) -> Person {
     Person {
       infected,
-      infected_connections,
+      infected_connections: 0,
       time: 0,
     }
   }

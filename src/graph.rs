@@ -1,6 +1,5 @@
 use crate::rand::BoolRNG;
 
-#[derive(Debug)]
 pub struct Graph {
   pub size: usize,
   data: Vec<bool>,
