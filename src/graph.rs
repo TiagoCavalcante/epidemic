@@ -2,11 +2,33 @@ use rand::distributions::{Distribution, Uniform};
 
 #[derive(Debug)]
 pub struct Graph {
-  pub size: usize,
-  pub data: Vec<Vec<bool>>,
+  size: usize,
+  data: Vec<bool>,
 }
 
 impl Graph {
+  fn get(&self, row: usize, col: usize) -> bool {
+    self.data[row * self.size + col]
+  }
+
+  fn set(&mut self, row: usize, col: usize, value: bool) {
+    self.data[row * self.size + col] = value
+  }
+
+  pub fn density(&self) -> f32 {
+    let mut edges: usize = 0;
+
+    for row in 0..self.size {
+      for col in 0..self.size {
+        if self.get(row, col) {
+          edges += 1;
+        }
+      }
+    }
+
+    edges as f32 / (self.size * (self.size - 1)) as f32
+  }
+
   fn max_data_density(&self) -> f32 {
     (self.size as f32 - 1.0) / self.size as f32
   }
@@ -21,17 +43,14 @@ impl Graph {
     let mut rng = rand::thread_rng();
 
     for i in 0..self.size {
-      self.data.push(Vec::with_capacity(self.size));
-
       for j in 0..self.size {
         if i < j {
           let random_number = uniform_rng.sample(&mut rng);
-          self.data[i].push(random_number < threshold);
+          self.set(i, j, random_number < threshold);
         } else if i == j {
-          self.data[i].push(false);
+          self.set(i, j, false);
         } else {
-          let value = self.data[j][i];
-          self.data[i].push(value);
+          self.set(i, j, self.get(j, i));
         }
       }
     }
@@ -40,25 +59,11 @@ impl Graph {
   pub fn new(size: usize, density: f32) -> Graph {
     let mut graph = Graph {
       size,
-      data: Vec::with_capacity(size),
+      data: vec![false; size * size],
     };
 
     graph.fill(density);
 
     graph
-  }
-
-  pub fn density(&self) -> f32 {
-    let mut edges: usize = 0;
-
-    for i in 0..self.size {
-      for j in 0..self.size {
-        if self.data[i][j] {
-          edges += 1;
-        }
-      }
-    }
-
-    edges as f32 / (self.size * (self.size - 1)) as f32
   }
 }
